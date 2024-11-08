@@ -49,6 +49,7 @@ export default function Component() {
     const [isMobile, setIsMobile] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const swiperRef = useRef(null)
+
     // Spring animation for the swipe button
     const [{ x }, api] = useSpring(() => ({ 
         x: 0,
@@ -115,7 +116,7 @@ export default function Component() {
             </header>
 
             <div className={`${isMobile ? 'h-[calc(100vh-72px)] bg-black' : 'max-w-[1200px] mx-auto px-4 py-8'}`}>
-                <Swiper
+               <Swiper
                     ref={swiperRef}
                     modules={[Pagination]}
                     spaceBetween={0}
@@ -131,10 +132,8 @@ export default function Component() {
                     onSlideChange={handleSlideChange}
                 >
                     {slides.map((slide, index) => (
-                        <SwiperSlide
-                            key={index}
-                            className={`${isMobile ? '!w-full' : '!w-[900px]'} ${index === activeIndex ? 'active-slide' : 'preview-slide'}`}
-                        >
+                        {slides.map((slide, index) => (
+                        <SwiperSlide key={index} className={`${isMobile ? '!w-full' : '!w-[900px]'} ${index === activeIndex ? 'active-slide' : 'preview-slide'}`}>
                             <motion.div
                                 className={`${isMobile ? 'h-full relative' : 'px-4 relative'}`}
                                 initial={{ opacity: 0, x: 100 }}
