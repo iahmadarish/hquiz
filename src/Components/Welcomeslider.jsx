@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
+import { motion } from 'framer-motion'
 import slide1 from "../Pages/utils/slider.jpg"
 import slide2 from "../Pages/utils/slider2.png"
 import slidemobile from "../Pages/utils/mobileview1.jpg"
@@ -44,11 +45,10 @@ const slides = [
 ]
 
 export default function Component() {
-    const [activeIndex, setActiveIndex] = useState(0)
+ const [activeIndex, setActiveIndex] = useState(0)
     const [isMobile, setIsMobile] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const swiperRef = useRef(null)
-
     // Spring animation for the swipe button
     const [{ x }, api] = useSpring(() => ({ 
         x: 0,
@@ -62,7 +62,8 @@ export default function Component() {
     }, [activeIndex, api])
 
     // Gesture binding for swipe button
-    const bind = useDrag(({ down, movement: [mx], cancel, active }) => {
+    const bind = useDrag(({ down, movement: [mx], cancel, active, event }) => {
+        event.stopPropagation() // Prevents other elements from being dragged
         if (!isMobile) return
         
         setIsDragging(active)
@@ -79,7 +80,6 @@ export default function Component() {
             return
         }
 
-        // Limit the drag to 80% of screen width
         const maxDrag = window.innerWidth * 0.8
         const boundedX = Math.min(mx, maxDrag)
         
@@ -107,10 +107,10 @@ export default function Component() {
     }
 
     return (
-        <div className="">
+       <div className="">
             <header className="bg-black p-4">
                 <div className="text-center">
-                    <img src={logo} alt="eveoked" className="mx-auto" />
+                    <img src={logo} alt="evoked" className="mx-auto" />
                 </div>
             </header>
 
@@ -133,10 +133,14 @@ export default function Component() {
                     {slides.map((slide, index) => (
                         <SwiperSlide
                             key={index}
-                            className={`${isMobile ? '!w-full' : '!w-[900px]'} ${index === activeIndex ? 'active-slide' : 'preview-slide'
-                                }`}
+                            className={`${isMobile ? '!w-full' : '!w-[900px]'} ${index === activeIndex ? 'active-slide' : 'preview-slide'}`}
                         >
-                            <div className={`${isMobile ? 'h-full relative' : 'px-4 relative'}`}>
+                            <motion.div
+                                className={`${isMobile ? 'h-full relative' : 'px-4 relative'}`}
+                                initial={{ opacity: 0, x: 100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5 }}
+                            >
                                 {/* Mobile Layout */}
                                 {isMobile && (
                                     <>
